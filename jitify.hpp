@@ -3064,11 +3064,12 @@ class JitCache_impl {
   std::mutex _program_cache_mutex;
 #endif
  public:
-  inline JitCache_impl(size_t cache_size)
+  inline JitCache_impl(size_t cache_size, int device = 0)
       : _kernel_cache(cache_size), _program_config_cache(cache_size) {
     detail::add_options_from_env(_options);
-    
-    cudaSetDevice(1);
+
+    // target a specific CUDA device 
+    cudaSetDevice(device);
     // Bootstrap the cuda context to avoid errors
     cudaFree(0);
   }
@@ -3500,8 +3501,8 @@ class JitCache {
    *    before overwriting the least-recently-used ones.
    */
   enum { DEFAULT_CACHE_SIZE = 128 };
-  JitCache(size_t cache_size = DEFAULT_CACHE_SIZE)
-      : _impl(new JitCache_impl(cache_size)) {}
+  JitCache(size_t cache_size = DEFAULT_CACHE_SIZE, int device = 0)
+      : _impl(new JitCache_impl(cache_size, device)) {}
 
   /*! Create a program.
    *
