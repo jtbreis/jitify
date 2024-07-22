@@ -3067,7 +3067,8 @@ class JitCache_impl {
   inline JitCache_impl(size_t cache_size)
       : _kernel_cache(cache_size), _program_config_cache(cache_size) {
     detail::add_options_from_env(_options);
-
+    
+    cudaSetDevice(1);
     // Bootstrap the cuda context to avoid errors
     cudaFree(0);
   }
